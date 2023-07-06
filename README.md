@@ -15,6 +15,11 @@ Installation
 
 	go get github.com/bastionzero/goleveldb/leveldb
 
+For a drop-in replacement, insert this line into your go.mod file:
+ ```go
+replace github.com/syndtr/goleveldb v1.0.0 => github.com/bastionzero/goleveldb v1.0.0
+```
+
 Requirements
 -----------
 
