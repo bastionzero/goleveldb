@@ -1,11 +1,24 @@
-This is an implementation of the [LevelDB key/value database](https://github.com/google/leveldb) in the [Go programming language](https://go.dev).
+This is BastionZero's fork of a [LevelDB key/value database](https://github.com/google/leveldb) implementation in the [Go programming language](https://go.dev).
 
-[![Build Status](https://app.travis-ci.com/syndtr/goleveldb.svg?branch=master)](https://app.travis-ci.com/syndtr/goleveldb)
+Why we forked
+-----------
+The nodejs [library](https://www.npmjs.com/package/classic-level) we use in the [ZLI](https://github.com/bastionzero/zli) is a direct wrapper for the original leveldb c++ code. That code uses fnctl locks to secure access to the db, while the golang library we [forked](https://github.com/syndtr/goleveldb) uses flocks. On linux, flocks have an independent implementation from fnctl locks which means the two are incompatible whereas on other systems, flocks are implemented using fnctl locks.
+
+The most important difference between the two (for us) is that fnctl locks map processes/pids to files. That means that a single lock is acquired for a single pid to access a given file. It does not allow for multi-threaded single processes which would use the same pid but otherwise uncoordinated access attempts within the code. Flocks maps a file handler to a file. This does allow for multi-threading because each thread would have a distinct file handler open to the file.
+
+This change is not more or less correct than using a flock, all it does it make it more compatible with other leveldb libraries that are implemented as bindings of the original c++ code, but there are benefits/detriments to doing it either way.
+
+[Here](https://lwn.net/Articles/586904/) is a good resource on locks
 
 Installation
 -----------
 
-	go get github.com/syndtr/goleveldb/leveldb
+	go get github.com/bastionzero/goleveldb/leveldb
+
+For a drop-in replacement, insert this line into your go.mod file:
+ ```go
+replace github.com/syndtr/goleveldb v1.0.0 => github.com/bastionzero/goleveldb v1.0.0
+```
 
 Requirements
 -----------
@@ -104,4 +117,4 @@ defer db.Close()
 Documentation
 -----------
 
-You can read package documentation [here](https://pkg.go.dev/github.com/syndtr/goleveldb).
+You can read package documentation [here](https://pkg.go.dev/github.com/bastionzero/goleveldb).
