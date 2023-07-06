@@ -2,6 +2,8 @@ module github.com/syndtr/goleveldb
 
 go 1.14
 
+replace github.com/syndtr/goleveldb => ./
+
 require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4
